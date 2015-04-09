@@ -21,8 +21,6 @@ namespace BX6_Test
         string SamplePath;
         string folderPath;
 
-        private Thread Send;
-
         string file;
 
         public string password = null;
@@ -103,10 +101,12 @@ namespace BX6_Test
             foreach (string port in ports1)
             {
                 PLCCom.Items.Add(port);
+                TELECom.Items.Add(port);
             }
             try
             {
                 PLCCom.SelectedIndex = 0;
+                TELECom.SelectedIndex = 1;
             }
             catch //(Exception er) 
             {
@@ -160,6 +160,22 @@ namespace BX6_Test
             Password.Show();
         }
 
+        private void 软硬件版本ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Passwordlogin PASSWORD = new Passwordlogin();
+            PASSWORD.GetForm(this);
+            PASSWORD.ShowDialog();
+            if (password == Properties.Settings.Default.PasswordSetting)
+            {
+                Form HSVersion = new HSVersion();
+                HSVersion.Show();
+            }
+            else
+            {
+                MessageBox.Show("此工号没有修改权限！！", "Error");
+            }    
+        }
+
         #endregion
 
         #region Port communication
@@ -174,13 +190,6 @@ namespace BX6_Test
                 dataRE = string.Join("", datare);
                 textBox8.Text = dataRE;
                 iData = 0;//0123修改
-
-                //if (dataRE.Contains("3A 30 31 30 32 30 31 39 36"))
-                //{
-                //    MessageBox.Show("此串口未连接到PLC上");
-                //    System.Diagnostics.Process.GetCurrentProcess().Kill();
-                //}
-
             }
         }
 
@@ -206,7 +215,28 @@ namespace BX6_Test
         }
 
 
+        public delegate void DeleUpdateTextbox1(string dataRe);
+        private void UpdateTextbox1(string dataRe)
+        {
+            textBox1.AppendText(dataRe);
+        }
+
+        private void serialPort2_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            string dataRe;
+            string[] data = new string[100];                           //修改
+
+            byte[] byteRead = new byte[serialPort2.BytesToRead];
+
+            DeleUpdateTextbox1 checkversion = new DeleUpdateTextbox1(UpdateTextbox1);
+
+            serialPort2.Read(byteRead, 0, byteRead.Length);
+
+            dataRe = Encoding.Default.GetString(byteRead);
+            textBox2.Invoke(checkversion, dataRe);
+        }
         #endregion
+        
         private string GetLRC(string a)                                         //计算LRC校验位
         {
             string original = a;
@@ -496,28 +526,72 @@ namespace BX6_Test
             //}
         }
 
-        private void button1_Click(object sender, EventArgs e)                  //自动测试
+        private void button5_Click(object sender, EventArgs e)                  //版本检查
         {
-            folderPath = Properties.Settings.Default.TestResultPathSetting;
-            file = folderPath + "/" + DateTime.Now.ToString("yyyy-MM-dd HHmmss") + ".txt";
             try
             {
-                if (textBox2.Text.Trim() == "")
+                String str2 = TELECom.Text;
+                serialPort2.PortName = str2;
+                serialPort2.BaudRate = 9600;
+                serialPort2.DataBits = 8;
+                serialPort2.StopBits = StopBits.One;
+                serialPort2.Parity = Parity.None;
+
+                if (serialPort2.IsOpen == true)
                 {
-                    MessageBox.Show("未输入合同号", "Error");
+                    serialPort2.Close();
                 }
-                else
-                {
-                    GetFile(textBox2.Text);        //调用GetFile函数，读取.odl文件
-                    GetExcelPart();
-                }
+                serialPort2.Open();
             }
             catch (Exception er)
             {
                 MessageBox.Show("Error:" + er.Message, "Error");
                 return;
             }
+            string a = "53 43 49 43 5F 49 44 45 4E 54 49 46 59 5F 48 57 3A 3D 31 0D"; //"99 66 05 FA 00 00 00 09 00 F7";
+            string[] aa1 = a.Split(' ');
+            byte[] message1 = new byte[aa1.Length];
+            int s = aa1.Length;
+            for (int i = 0; i < aa1.Length; i++)
+            {
+                message1[i] = Convert.ToByte(aa1[i], 16);
+            }
+            serialPort2.Write(message1, 0, s);
+            Thread.Sleep(500);
 
+            a = "53 43 49 43 5F 49 44 45 4E 54 49 46 59 5F 53 57 3A 3D 31 0D"; //"99 66 05 FA 00 00 00 09 00 F7";
+            aa1 = a.Split(' ');
+            message1 = new byte[aa1.Length];
+            s = aa1.Length;
+            for (int i = 0; i < aa1.Length; i++)
+            {
+                message1[i] = Convert.ToByte(aa1[i], 16);
+            }
+            serialPort2.Write(message1, 0, s);
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)                  //自动测试
+        {
+            folderPath = Properties.Settings.Default.TestResultPathSetting;
+            file = folderPath + "/" + DateTime.Now.ToString("yyyy-MM-dd HHmmss") + ".txt";
+            if (textBox2.Text.Trim() == "")
+            {
+                MessageBox.Show("未输入合同号", "Error");
+            }
+            else
+            {
+                try
+                {
+                    GetFile(textBox2.Text);        //调用GetFile函数，读取.odl文件
+                    GetExcelPart();
+                }
+                catch (Exception er)
+                {
+                    MessageBox.Show("Error:" + er.Message, "Error");
+                    return;
+                }
+            }
             if (textBox3.Text.Trim() == "")
             {
                 MessageBox.Show("未输入工号", "Error");
@@ -549,7 +623,7 @@ namespace BX6_Test
                 }
                 catch
                 {
-                    MessageBox.Show("请先关闭其他模式的窗口！！", "Error");
+                    MessageBox.Show("串口打开异常 或正在被使用！！", "Error");
                 }
 
             }
@@ -592,7 +666,7 @@ namespace BX6_Test
                 }
                 catch
                 {
-                    MessageBox.Show("请先关闭其他模式的窗口！！", "Error");
+                    MessageBox.Show("串口打开异常 或正在被使用！！", "Error");
                 }
 
             }

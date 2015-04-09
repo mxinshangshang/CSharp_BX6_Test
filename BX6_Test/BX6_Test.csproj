@@ -53,6 +53,12 @@
     <Compile Include="AutoReport.Designer.cs">
       <DependentUpon>AutoReport.cs</DependentUpon>
     </Compile>
+    <Compile Include="HSVersion.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HSVersion.Designer.cs">
+      <DependentUpon>HSVersion.cs</DependentUpon>
+    </Compile>
     <Compile Include="LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,6 +123,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="AutoReport.resx">
       <DependentUpon>AutoReport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HSVersion.resx">
+      <DependentUpon>HSVersion.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>

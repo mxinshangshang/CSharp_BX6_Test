@@ -470,7 +470,6 @@
             this.button18.Size = new System.Drawing.Size(75, 171);
             this.button18.TabIndex = 34;
             this.button18.UseVisualStyleBackColor = true;
-            this.button18.Click += new System.EventHandler(this.button18_Click);
             // 
             // groupBox4
             // 
@@ -493,7 +492,6 @@
             this.button17.Size = new System.Drawing.Size(75, 171);
             this.button17.TabIndex = 36;
             this.button17.UseVisualStyleBackColor = true;
-            this.button17.Click += new System.EventHandler(this.button17_Click);
             // 
             // pictureBox1
             // 

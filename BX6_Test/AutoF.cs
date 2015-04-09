@@ -35,7 +35,7 @@ namespace BX6_Test
         int iData = 0;
         bool NEXT = true;
 
-        protected override void WndProc(ref   Message m)
+        protected override void WndProc(ref   Message m)            //禁用右上角关闭按钮
         {
             const int WM_SYSCOMMAND = 0x0112;
             const int SC_CLOSE = 0xF060;

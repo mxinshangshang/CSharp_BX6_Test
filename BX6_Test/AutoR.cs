@@ -1264,19 +1264,19 @@ namespace BX6_Test
             R.Abort();
         }
 
-        private void button17_Click(object sender, EventArgs e)
-        {
-            opening = new Thread(OpenTheDoor);
-            opening.IsBackground = true;
-            opening.Start();
-        }
+        //private void button17_Click(object sender, EventArgs e)
+        //{
+        //    opening = new Thread(OpenTheDoor);
+        //    opening.IsBackground = true;
+        //    opening.Start();
+        //}
 
-        private void button18_Click(object sender, EventArgs e)
-        {
-            closeing = new Thread(CloseTheDoor);
-            closeing.IsBackground = true;
-            closeing.Start();
-        }
+        //private void button18_Click(object sender, EventArgs e)
+        //{
+        //    closeing = new Thread(CloseTheDoor);
+        //    closeing.IsBackground = true;
+        //    closeing.Start();
+        //}
 
         private void button15_Click(object sender, EventArgs e)
         {
