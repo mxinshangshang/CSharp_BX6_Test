@@ -64,8 +64,6 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.serialPort2 = new System.IO.Ports.SerialPort(this.components);
-            this.button5 = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
@@ -80,7 +78,7 @@
             this.路径设置ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(975, 25);
+            this.menuStrip1.Size = new System.Drawing.Size(897, 25);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -270,7 +268,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(719, 60);
+            this.button1.Location = new System.Drawing.Point(638, 60);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 27;
@@ -280,7 +278,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(800, 60);
+            this.button2.Location = new System.Drawing.Point(719, 60);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 28;
@@ -290,7 +288,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(881, 60);
+            this.button3.Location = new System.Drawing.Point(800, 60);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 29;
@@ -309,15 +307,19 @@
             // 
             // textBox9
             // 
+            this.textBox9.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.textBox9.Location = new System.Drawing.Point(474, 62);
             this.textBox9.Name = "textBox9";
+            this.textBox9.ReadOnly = true;
             this.textBox9.Size = new System.Drawing.Size(72, 21);
             this.textBox9.TabIndex = 31;
             // 
             // textBox10
             // 
+            this.textBox10.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.textBox10.Location = new System.Drawing.Point(552, 62);
             this.textBox10.Name = "textBox10";
+            this.textBox10.ReadOnly = true;
             this.textBox10.Size = new System.Drawing.Size(80, 21);
             this.textBox10.TabIndex = 32;
             // 
@@ -356,26 +358,11 @@
             this.label9.TabIndex = 36;
             this.label9.Text = "SW Version";
             // 
-            // serialPort2
-            // 
-            this.serialPort2.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort2_DataReceived);
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(638, 60);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 23);
-            this.button5.TabIndex = 37;
-            this.button5.Text = "版本检查";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(975, 107);
-            this.Controls.Add(this.button5);
+            this.ClientSize = new System.Drawing.Size(897, 107);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
@@ -454,8 +441,6 @@
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.ToolStripMenuItem 软硬件版本ToolStripMenuItem;
-        private System.IO.Ports.SerialPort serialPort2;
-        private System.Windows.Forms.Button button5;
     }
 }
 

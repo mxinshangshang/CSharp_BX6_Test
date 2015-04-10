@@ -44,6 +44,8 @@ namespace BX6_Test
                     Properties.Settings.Default.HardwareSetting = textBox1.Text;
                     Properties.Settings.Default.SoftwareSetting = textBox2.Text;
                     Properties.Settings.Default.Save();
+                    MessageBox.Show("设置完毕软件即将关闭"+"\r\n"+"请重启软件", "提示");
+                    System.Diagnostics.Process.GetCurrentProcess().Kill();
                     this.Close();
                 }
             }

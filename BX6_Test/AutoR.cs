@@ -32,6 +32,9 @@ namespace BX6_Test
         string PLCCom;
         string Contract;
         string JobNum;
+        string TELECom;
+        string HWversion="";
+        string SWversion="";
 
         public int iTextbox5 = 0;
         string[] words = new string[2];
@@ -89,7 +92,7 @@ namespace BX6_Test
             base.WndProc(ref m);
         }
 
-        public AutoR(string file, string PLCCom, string[,] PLCPrm1,string contract,string jobnum,int[] PLCPrm)
+        public AutoR(string file, string PLCCom, string[,] PLCPrm1, string contract, string jobnum, int[] PLCPrm, string TELECom)
         {
             InitializeComponent();
 
@@ -99,6 +102,7 @@ namespace BX6_Test
             this.Contract = contract;
             this.JobNum = jobnum;
             this.PLCPrm = PLCPrm;
+            this.TELECom = TELECom;
 
             groupBox2.Visible = false;
             groupBox3.Visible = false;
@@ -113,6 +117,20 @@ namespace BX6_Test
                 serialPort1.Close();
             }
             serialPort1.Open();
+
+            serialPort2.PortName = TELECom;
+            serialPort2.BaudRate = 9600;
+            serialPort2.DataBits = 8;
+            serialPort2.StopBits = StopBits.One;
+            serialPort2.Parity = Parity.None;
+
+            if (serialPort2.IsOpen == true)
+            {
+                serialPort2.Close();
+            }
+
+            serialPort2.Open();
+
 
             trackBar1.Maximum = 84000;
             trackBar1.Minimum = 0;
@@ -185,6 +203,12 @@ namespace BX6_Test
             {
                 ing = true;
                 datare[iData++] = dataRe;
+
+                if (iData == 99)
+                {
+                    iData = 2;
+                }
+
                 if (datare[iData - 1] == "0A " && datare[iData - 2] == "0D ")
                 {
                     dataRE = string.Join("", datare);
@@ -250,6 +274,34 @@ namespace BX6_Test
 
             }
 
+        }
+
+
+        public delegate void DeleCheckTextbox(string dataRe);
+        private void CheckTextbox(string dataRe)
+        {
+            textBox1.AppendText(dataRe);
+            if (dataRe.Contains("CPLD"))
+            {
+                HWversion = dataRe.Split(' ')[1];
+            }
+            if (dataRe.Contains("Software version"))
+            {
+                SWversion = dataRe.Split(' ')[3];
+            }
+        }
+        private void serialPort2_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            string dataRe;
+            string[] data = new string[1000];
+            byte[] byteRead = new byte[serialPort2.BytesToRead];
+
+            DeleCheckTextbox checktextbox = new DeleCheckTextbox(CheckTextbox);
+
+            serialPort2.Read(byteRead, 0, byteRead.Length);
+
+            dataRe = Encoding.Default.GetString(byteRead);
+            textBox1.Invoke(checktextbox, dataRe);
         }
 
         #endregion
@@ -907,6 +959,47 @@ namespace BX6_Test
 
 
             Thread.Sleep(25000);
+            MessageBox.Show("请等待液晶屏显示 [    53] 后" + "\n\n" + "然后按确认");
+
+            button1.BackColor = Color.LightGray;                                //Check Version
+            button13.BackColor = Color.LightSeaGreen;
+
+            while ((HWversion.Contains(Properties.Settings.Default.HardwareSetting) == false) || (SWversion.Contains(Properties.Settings.Default.SoftwareSetting) == false))
+            {
+                a = "53 43 49 43 5F 49 44 45 4E 54 49 46 59 5F 48 57 3A 3D 31 0D";
+                string[] aa1 = a.Split(' ');
+                message1 = new byte[aa1.Length];
+                int s = aa1.Length;
+                for (int i = 0; i < aa1.Length; i++)
+                {
+                    message1[i] = Convert.ToByte(aa1[i], 16);
+                }
+                serialPort2.Write(message1, 0, s);
+                Thread.Sleep(2000);
+
+                a = "53 43 49 43 5F 49 44 45 4E 54 49 46 59 5F 53 57 3A 3D 31 0D";
+                aa1 = a.Split(' ');
+                message1 = new byte[aa1.Length];
+                s = aa1.Length;
+                for (int i = 0; i < aa1.Length; i++)
+                {
+                    message1[i] = Convert.ToByte(aa1[i], 16);
+                }
+                serialPort2.Write(message1, 0, s);
+                Thread.Sleep(3000);
+                if (HWversion.Contains(Properties.Settings.Default.HardwareSetting) == false)
+                {
+                    MessageBox.Show("要求硬件版本为： " + Properties.Settings.Default.HardwareSetting + "\n\n" + "实际硬件版本为： " + HWversion);
+                }
+                if (SWversion.Contains(Properties.Settings.Default.SoftwareSetting) == false)
+                {
+                    MessageBox.Show("要求软件版本为： " + Properties.Settings.Default.SoftwareSetting + "\n\n" + "实际软件版本为： " + SWversion);
+                }
+            }
+
+            button13.BackColor = Color.LightGray;
+            button3.BackColor = Color.LightSeaGreen;
+
             MessageBox.Show("请等待液晶屏显示 [    53] 后" + "\n\n" + "再将 107 设为 1" + "\n" + "   将 116 设为 1" + "\n\n" + "然后按确认");
             encoder = false;
             Thread.Sleep(500);
@@ -920,9 +1013,6 @@ namespace BX6_Test
             encoder = true;
             Thread.Sleep(500);
             encoder = true;
-
-            button1.BackColor = Color.LightGray;
-            button3.BackColor = Color.LightSeaGreen;
 
             CheckRun = new Thread(RightOrWrong);
             CheckRun.IsBackground = true;
@@ -1221,6 +1311,16 @@ namespace BX6_Test
 
             button6.BackColor = Color.LightGray;                                //Erase EEPROM
             button20.BackColor = Color.LightSeaGreen;
+
+            a = "47 43 5F 45 52 41 53 45 5F 45 45 3A 3D 31 0D";
+            string[] aa = a.Split(' ');
+            byte[] message = new byte[aa.Length];
+            int s1 = aa.Length;
+            for (int i = 0; i < aa.Length; i++)
+            {
+                message[i] = Convert.ToByte(aa[i], 16);
+            }
+            serialPort2.Write(message, 0, s1);     
 
 
             Thread.Sleep(5000);

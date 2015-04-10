@@ -65,6 +65,8 @@ namespace BX6_Test
 
             textBox2.Text = "68888888";                          //修改
             textBox3.Text = "123456";                          //修改
+            textBox9.Text = Properties.Settings.Default.HardwareSetting;
+            textBox10.Text = Properties.Settings.Default.SoftwareSetting;
 
             try
             {
@@ -214,27 +216,6 @@ namespace BX6_Test
             }
         }
 
-
-        public delegate void DeleUpdateTextbox1(string dataRe);
-        private void UpdateTextbox1(string dataRe)
-        {
-            textBox1.AppendText(dataRe);
-        }
-
-        private void serialPort2_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            string dataRe;
-            string[] data = new string[100];                           //修改
-
-            byte[] byteRead = new byte[serialPort2.BytesToRead];
-
-            DeleUpdateTextbox1 checkversion = new DeleUpdateTextbox1(UpdateTextbox1);
-
-            serialPort2.Read(byteRead, 0, byteRead.Length);
-
-            dataRe = Encoding.Default.GetString(byteRead);
-            textBox2.Invoke(checkversion, dataRe);
-        }
         #endregion
         
         private string GetLRC(string a)                                         //计算LRC校验位
@@ -526,51 +507,6 @@ namespace BX6_Test
             //}
         }
 
-        private void button5_Click(object sender, EventArgs e)                  //版本检查
-        {
-            try
-            {
-                String str2 = TELECom.Text;
-                serialPort2.PortName = str2;
-                serialPort2.BaudRate = 9600;
-                serialPort2.DataBits = 8;
-                serialPort2.StopBits = StopBits.One;
-                serialPort2.Parity = Parity.None;
-
-                if (serialPort2.IsOpen == true)
-                {
-                    serialPort2.Close();
-                }
-                serialPort2.Open();
-            }
-            catch (Exception er)
-            {
-                MessageBox.Show("Error:" + er.Message, "Error");
-                return;
-            }
-            string a = "53 43 49 43 5F 49 44 45 4E 54 49 46 59 5F 48 57 3A 3D 31 0D"; //"99 66 05 FA 00 00 00 09 00 F7";
-            string[] aa1 = a.Split(' ');
-            byte[] message1 = new byte[aa1.Length];
-            int s = aa1.Length;
-            for (int i = 0; i < aa1.Length; i++)
-            {
-                message1[i] = Convert.ToByte(aa1[i], 16);
-            }
-            serialPort2.Write(message1, 0, s);
-            Thread.Sleep(500);
-
-            a = "53 43 49 43 5F 49 44 45 4E 54 49 46 59 5F 53 57 3A 3D 31 0D"; //"99 66 05 FA 00 00 00 09 00 F7";
-            aa1 = a.Split(' ');
-            message1 = new byte[aa1.Length];
-            s = aa1.Length;
-            for (int i = 0; i < aa1.Length; i++)
-            {
-                message1[i] = Convert.ToByte(aa1[i], 16);
-            }
-            serialPort2.Write(message1, 0, s);
-
-        }
-
         private void button1_Click(object sender, EventArgs e)                  //自动测试
         {
             folderPath = Properties.Settings.Default.TestResultPathSetting;
@@ -606,14 +542,14 @@ namespace BX6_Test
 
                     //    serialPort1.Close();
                         textBox5.Clear();
-                        Form AutoWire = new AutoW(file, PLCCom.Text, PLCPrm3, PLCPrm4, textBox2.Text, textBox3.Text, PLCPrm);
-                        AutoWire.Show();
+                        //Form AutoWire = new AutoW(file, PLCCom.Text, PLCPrm3, PLCPrm4, textBox2.Text, textBox3.Text, PLCPrm);
+                        //AutoWire.Show();
 
                         //Form AutoFun = new AutoF(file, PLCCom.Text, PLCPrm4, PLCPrm3, textBox2.Text, textBox3.Text, PLCPrm);//功能测试单项
                         //AutoFun.Show();
 
-                        //Form AutoRun = new AutoR(file, PLCCom.Text, PLCPrm4, textBox2.Text, textBox3.Text, PLCPrm);//运行测试单项
-                        //AutoRun.Show();
+                        Form AutoRun = new AutoR(file, PLCCom.Text, PLCPrm4, textBox2.Text, textBox3.Text, PLCPrm,TELECom.Text);//运行测试单项
+                        AutoRun.Show();
                     //}
                     //else
                     //{

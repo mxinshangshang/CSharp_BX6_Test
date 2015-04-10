@@ -23,6 +23,7 @@ namespace BX6_Test
         StreamWriter mySw;
         string file;
         string PLCCom;
+        string TELECom;
         string Contract;
         string JobNum;
 
@@ -46,12 +47,13 @@ namespace BX6_Test
             base.WndProc(ref m);
         }
 
-        public AutoF(string file, string PLCCom, string[,] PLCPrm1, string[,] PLCPrm2,string contract,string jobnum,int[] PLCPrm)
+        public AutoF(string file, string PLCCom, string[,] PLCPrm1, string[,] PLCPrm2,string contract,string jobnum,int[] PLCPrm,string TELECom)
         {
             InitializeComponent();
 
             this.file = file;
             this.PLCCom = PLCCom;
+            this.TELECom = TELECom;
             this.PLCPrm1 = PLCPrm1;
             this.PLCPrm2 = PLCPrm2;
             this.Contract = contract;
@@ -169,7 +171,7 @@ namespace BX6_Test
             if (NEXT == true)
             {
                 serialPort1.Close();
-                Form AutoRun = new AutoR(file, PLCCom, PLCPrm2,Contract,JobNum,PLCPrm);
+                Form AutoRun = new AutoR(file, PLCCom, PLCPrm2,Contract,JobNum,PLCPrm,TELECom);
                 AutoRun.Show();                
                 this.Close();
             }
