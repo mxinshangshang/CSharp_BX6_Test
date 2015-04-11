@@ -477,9 +477,9 @@
             // 
             this.button18.FlatAppearance.BorderSize = 2;
             this.button18.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button18.Location = new System.Drawing.Point(988, 50);
+            this.button18.Location = new System.Drawing.Point(997, 53);
             this.button18.Name = "button18";
-            this.button18.Size = new System.Drawing.Size(75, 171);
+            this.button18.Size = new System.Drawing.Size(49, 171);
             this.button18.TabIndex = 34;
             this.button18.UseVisualStyleBackColor = true;
             this.button18.Click += new System.EventHandler(this.button18_Click);
@@ -488,10 +488,11 @@
             // 
             this.groupBox4.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.groupBox4.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("groupBox4.BackgroundImage")));
-            this.groupBox4.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.groupBox4.Location = new System.Drawing.Point(824, 21);
+            this.groupBox4.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.groupBox4.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.groupBox4.Location = new System.Drawing.Point(842, 21);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(331, 241);
+            this.groupBox4.Size = new System.Drawing.Size(313, 241);
             this.groupBox4.TabIndex = 35;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "门机动作：";
@@ -500,9 +501,9 @@
             // 
             this.button17.FlatAppearance.BorderSize = 2;
             this.button17.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button17.Location = new System.Drawing.Point(917, 50);
+            this.button17.Location = new System.Drawing.Point(949, 53);
             this.button17.Name = "button17";
-            this.button17.Size = new System.Drawing.Size(75, 171);
+            this.button17.Size = new System.Drawing.Size(49, 171);
             this.button17.TabIndex = 36;
             this.button17.UseVisualStyleBackColor = true;
             this.button17.Click += new System.EventHandler(this.button17_Click);

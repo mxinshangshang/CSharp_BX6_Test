@@ -331,14 +331,14 @@ namespace BX6_Test
         {
             MOVING moving_l = new MOVING(move_l);
             MOVING moving_r = new MOVING(move_r);
-            int l = 917;
-            int r = 988;
+            int l = 949;
+            int r = 997;
             while (true)
             {
                 button17.Invoke(moving_l, l--);
                 button18.Invoke(moving_r, r++);
-                Thread.Sleep(30);
-                if (l == 846) break;
+                Thread.Sleep(80);
+                if (l == 904) break;
             }
             Thread.CurrentThread.Abort();
         }
@@ -346,14 +346,14 @@ namespace BX6_Test
         {
             MOVING moving_l = new MOVING(move_l);
             MOVING moving_r = new MOVING(move_r);
-            int l = 845;
-            int r = 1060;
+            int l = 904;
+            int r = 1041;
             while (true)
             {
                 button17.Invoke(moving_l, l++);
                 button18.Invoke(moving_r, r--);
-                Thread.Sleep(30);
-                if (l == 918) break;
+                Thread.Sleep(80);
+                if (l == 949) break;
             }
             Thread.CurrentThread.Abort();
         }
@@ -414,7 +414,7 @@ namespace BX6_Test
         {
             while (true)
             {
-                while (encoder)
+                if (encoder)
                 {
                     string a = ": 01 03 12 " + "00" + " 00 02";
                     string b = GetLRC(a);
@@ -1362,39 +1362,40 @@ namespace BX6_Test
         private void button2_Click(object sender, EventArgs e)
         {
             R.Abort();
+            this.button19.Enabled = true;
         }
 
-        //private void button17_Click(object sender, EventArgs e)
-        //{
-        //    opening = new Thread(OpenTheDoor);
-        //    opening.IsBackground = true;
-        //    opening.Start();
-        //}
+        private void button17_Click(object sender, EventArgs e)
+        {
+            opening = new Thread(OpenTheDoor);
+            opening.IsBackground = true;
+            opening.Start();
+        }
 
-        //private void button18_Click(object sender, EventArgs e)
-        //{
-        //    closeing = new Thread(CloseTheDoor);
-        //    closeing.IsBackground = true;
-        //    closeing.Start();
-        //}
+        private void button18_Click(object sender, EventArgs e)
+        {
+            closeing = new Thread(CloseTheDoor);
+            closeing.IsBackground = true;
+            closeing.Start();
+        }
 
         private void button15_Click(object sender, EventArgs e)
         {
             tally = false;
             encoder = false;
-            //if (MessageBox.Show("请确认已按  PowerOff", "提示", MessageBoxButtons.OKCancel) == DialogResult.OK)
-            //{
-            //    Send = new Thread(new ParameterizedThreadStart(SentToPLC));
-            //    Send.IsBackground = true;
-            //    Send.Start("14 00");
-            //    Thread.Sleep(1000);
-            //    this.Close();
-            //}
-            Send = new Thread(new ParameterizedThreadStart(SentToPLC));
-            Send.IsBackground = true;
-            Send.Start("14 00");
-            Thread.Sleep(1000);
-            this.Close();
+            if (MessageBox.Show("请确认是否关闭", "提示", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                Send = new Thread(new ParameterizedThreadStart(SentToPLC));
+                Send.IsBackground = true;
+                Send.Start("14 00");
+                Thread.Sleep(500);
+                this.Close();
+            }
+            //Send = new Thread(new ParameterizedThreadStart(SentToPLC));
+            //Send.IsBackground = true;
+            //Send.Start("14 00");
+            //Thread.Sleep(1000);
+            //this.Close();
         }
 
         #region button_Click

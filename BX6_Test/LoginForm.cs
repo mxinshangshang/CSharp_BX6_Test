@@ -542,10 +542,10 @@ namespace BX6_Test
 
                     //    serialPort1.Close();
                         textBox5.Clear();
-                        //Form AutoWire = new AutoW(file, PLCCom.Text, PLCPrm3, PLCPrm4, textBox2.Text, textBox3.Text, PLCPrm);
+                        //Form AutoWire = new AutoW(file, PLCCom.Text, PLCPrm3, PLCPrm4, textBox2.Text, textBox3.Text, PLCPrm, TELECom.Text);
                         //AutoWire.Show();
 
-                        //Form AutoFun = new AutoF(file, PLCCom.Text, PLCPrm4, PLCPrm3, textBox2.Text, textBox3.Text, PLCPrm);//功能测试单项
+                        //Form AutoFun = new AutoF(file, PLCCom.Text, PLCPrm4, PLCPrm3, textBox2.Text, textBox3.Text, PLCPrm, TELECom.Text);//功能测试单项
                         //AutoFun.Show();
 
                         Form AutoRun = new AutoR(file, PLCCom.Text, PLCPrm4, textBox2.Text, textBox3.Text, PLCPrm,TELECom.Text);//运行测试单项

@@ -128,18 +128,18 @@ namespace BX6_Test
             serialPort1.Write(message1, 0, b.Length);
 
             Thread.Sleep(1000);
-            if (dataRE.Contains("3A 30 31 30 32 30 31 39 36"))
-            {
+            //if (dataRE.Contains("3A 30 31 30 32 30 31 39 36"))    //修改
+            //{
                 EnableButton ebutton = new EnableButton(enablebutton);
                 button1.Invoke(ebutton);
                 return;
-            }
-            else
-            {
-                MessageBox.Show("此串口未监测到 PLC 在线" + "\n\n" + "请关闭软件确认好 PLC 在线 并且与 串口 连线正确后重试", "Error");
-                System.Diagnostics.Process.GetCurrentProcess().Kill();
-            }
-            Thread.CurrentThread.Abort();
+            //}
+            //else
+            //{
+            //    MessageBox.Show("PLC串口未监测到 PLC 在线" + "\n\n" + "请关闭软件确认好 PLC 在线 并且与 串口 连线正确后重试", "Error");
+            //    System.Diagnostics.Process.GetCurrentProcess().Kill();
+            //}
+            //Thread.CurrentThread.Abort();
         }
 
 

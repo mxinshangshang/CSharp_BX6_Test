@@ -266,14 +266,14 @@ namespace BX6_Test
         {
             MOVING moving_l = new MOVING(move_l);
             MOVING moving_r = new MOVING(move_r);
-            int l = 917;
-            int r = 988;
+            int l = 949;
+            int r = 997;
             while (true)
             {
                 button17.Invoke(moving_l, l--);
                 button18.Invoke(moving_r, r++);
-                Thread.Sleep(30);
-                if (l == 846) break;
+                Thread.Sleep(80);
+                if (l == 904) break;
             }
             Thread.CurrentThread.Abort();
         }
@@ -281,14 +281,14 @@ namespace BX6_Test
         {
             MOVING moving_l = new MOVING(move_l);
             MOVING moving_r = new MOVING(move_r);
-            int l = 845;
-            int r = 1060;
+            int l = 904;
+            int r = 1041;
             while (true)
             {
                 button17.Invoke(moving_l, l++);
                 button18.Invoke(moving_r, r--);
-                Thread.Sleep(30);
-                if (l == 918) break;
+                Thread.Sleep(80);
+                if (l == 949) break;
             }
             Thread.CurrentThread.Abort();
         }

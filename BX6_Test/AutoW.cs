@@ -333,7 +333,7 @@ namespace BX6_Test
             }
             else
             {
-                MessageBox.Show("此串口未监测到 PLC 在线" + "\n\n" + "请关闭软件确认好 PLC 在线 并且与 串口 连线正确后重试", "Error");
+                MessageBox.Show("PLC串口未监测到 PLC 在线" + "\n\n" + "请关闭软件确认好 PLC 在线 并且与 串口 连线正确后重试", "Error");
                 System.Diagnostics.Process.GetCurrentProcess().Kill();
             }
             Thread.CurrentThread.Abort();
