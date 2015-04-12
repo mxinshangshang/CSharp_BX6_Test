@@ -270,10 +270,10 @@ namespace BX6_Test
             int r = 997;
             while (true)
             {
-                button17.Invoke(moving_l, l--);
-                button18.Invoke(moving_r, r++);
-                Thread.Sleep(80);
-                if (l == 904) break;
+                button17.Invoke(moving_l, l = l - 2);
+                button18.Invoke(moving_r, r = r + 2);
+                Thread.Sleep(100);
+                if (l == 903) break;
             }
             Thread.CurrentThread.Abort();
         }
@@ -285,10 +285,10 @@ namespace BX6_Test
             int r = 1041;
             while (true)
             {
-                button17.Invoke(moving_l, l++);
-                button18.Invoke(moving_r, r--);
-                Thread.Sleep(80);
-                if (l == 949) break;
+                button17.Invoke(moving_l, l = l + 2);
+                button18.Invoke(moving_r, r = r - 2);
+                Thread.Sleep(100);
+                if (l == 948) break;
             }
             Thread.CurrentThread.Abort();
         }
@@ -789,10 +789,12 @@ namespace BX6_Test
 
             tally = true;
             Thread T = new Thread(Tally);
+            T.IsBackground = true;
             T.Start();                                   //指示灯线程
 
             encoder = true;
             Thread RE = new Thread(ReadEconder);
+            RE.IsBackground = true;
             RE.Start();                                  //读取编码器线程
 
             CheckRun = new Thread(RightOrWrong);
