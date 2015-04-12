@@ -22,10 +22,12 @@ namespace BX6_Test
         private Thread CheckRun;
         private Thread Send;
         private Thread Door;
-        private Thread Call;
+        //private Thread Call;
         private Thread opening;
         private Thread closeing;
         private Thread R;
+        private Thread T;
+        private Thread RE;
         FileStream myFs;
         StreamWriter mySw;
         string file;
@@ -80,6 +82,8 @@ namespace BX6_Test
         int firstplace = 0;
         int secondplace = 0;
         #endregion
+
+        //static AutoResetEvent waitCallCarHandler = new AutoResetEvent(false);
 
         protected override void WndProc(ref   Message m)                //禁用左上角关闭按钮
         {
@@ -669,6 +673,7 @@ namespace BX6_Test
         {
             while (true)
             {
+                //waitCallCarHandler.WaitOne();
                 if (one == true)
                 {
                     one = false;
@@ -950,11 +955,11 @@ namespace BX6_Test
 
 
             tally = true;  //开启信号灯线程
-            Thread T = new Thread(Tally);
+            T = new Thread(Tally);
             T.Start();
 
             encoder = true; //开启编码器读数线程
-            Thread RE = new Thread(ReadEconder);
+            RE = new Thread(ReadEconder);
             RE.Start();
 
 
@@ -1228,9 +1233,9 @@ namespace BX6_Test
             Door = new Thread(OpenCloseDoor);
             Door.IsBackground = true;
             Door.Start();
-            Call = new Thread(CarCall);
-            Call.IsBackground = true;
-            Call.Start();
+            //Call = new Thread(CarCall);
+            //Call.IsBackground = true;
+            //Call.Start();
 
 
             Thread.Sleep(5000);
@@ -1361,6 +1366,14 @@ namespace BX6_Test
 
         private void button2_Click(object sender, EventArgs e)
         {
+            try
+            {
+                T.Abort();
+                RE.Abort();
+                CheckRun.Abort();
+                Door.Abort();
+            }
+            catch { }
             R.Abort();
             this.button19.Enabled = true;
         }

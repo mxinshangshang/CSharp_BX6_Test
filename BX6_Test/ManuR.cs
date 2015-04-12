@@ -78,6 +78,9 @@ namespace BX6_Test
         int secondplace = 0;
         #endregion
 
+        //public static AutoResetEvent waitCallCarHandler;
+        static AutoResetEvent waitCallCarHandler = new AutoResetEvent(false);
+
         protected override void WndProc(ref   Message m)
         {
             const int WM_SYSCOMMAND = 0x0112;
@@ -386,6 +389,7 @@ namespace BX6_Test
         {
             while (true)
             {
+                waitCallCarHandler.WaitOne();
                 if (one == true)
                 {
                     one = false;
@@ -1000,6 +1004,7 @@ namespace BX6_Test
 
         private void button10_Click(object sender, EventArgs e)                         //楼层呼叫3楼
         {
+            waitCallCarHandler.Set();
             //Send = new Thread(new ParameterizedThreadStart(SentToPLC));
             //Send.IsBackground = true;
             //Send.Start("1D FF");
@@ -1013,6 +1018,7 @@ namespace BX6_Test
 
         private void button11_Click(object sender, EventArgs e)                         //楼层呼叫2楼
         {
+            waitCallCarHandler.Set();
             //Send = new Thread(new ParameterizedThreadStart(SentToPLC));
             //Send.IsBackground = true;
             //Send.Start("1C FF");
@@ -1026,6 +1032,7 @@ namespace BX6_Test
 
         private void button12_Click(object sender, EventArgs e)                         //楼层呼叫1楼
         {
+            waitCallCarHandler.Set();
             //Send = new Thread(new ParameterizedThreadStart(SentToPLC));
             //Send.IsBackground = true;
             //Send.Start("1B FF");
