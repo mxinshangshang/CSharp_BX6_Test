@@ -15,6 +15,8 @@ namespace BX6_Test
     {
         bool result;
         string PLCCom;
+        public bool closeit = false;
+        public AutoR form1 = null;
 
         protected override void WndProc(ref   Message m)
         {
@@ -47,14 +49,21 @@ namespace BX6_Test
 
             if (next == true)
             {
-                label1.ForeColor = Color.Green;
+                //label1.ForeColor = Color.Green;
+                this.BackColor = Color.Green;
                 label1.Text = "模拟运行测试  PASS";
             }
             else if(next==false)
             {
-                label1.ForeColor = Color.Red;
+                //label1.ForeColor = Color.Red;
+                this.BackColor = Color.Red;
                 label1.Text = "模拟运行测试  FAIL";
             }
+        }
+
+        public void GetOrder(AutoR theform)
+        {
+            form1 = theform;
         }
 
         private string GetLRC(string a)
@@ -84,7 +93,8 @@ namespace BX6_Test
             byte[] message1 = System.Text.Encoding.ASCII.GetBytes(b);
             serialPort1.Write(message1, 0, b.Length);
             serialPort1.Close();
-            MessageBox.Show("请移除所有PCBA上的插件"+"\n\n"+"将控制柜中所有元器件的插件插回到ECB印板上");
+            MessageBox.Show("请先关闭 JTHS" + "\n\n" + "移除所有从测试台来的 红色线束" + "\n\n" + "移除 红白链条 上的 短接线" + "\n\n" + "将控制柜中所有元器件的插件 插回 到ECB印板上");
+            form1.closeit =true;
             this.Close();
         }
 

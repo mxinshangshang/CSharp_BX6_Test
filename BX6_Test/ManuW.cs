@@ -110,15 +110,77 @@ namespace BX6_Test
             mySw.Close();
             myFs.Close();
         }
+        //private void StartCheck(object arry)
+        //{
+        //    string[,] Arry = arry as string[,];
+        //    int error = 0;
+        //    SetTextCallback settextbox = new SetTextCallback(SetText);
+        //    while (true)
+        //    {
+        //        if (check == 2)
+        //        {
+        //            check = 0;                     //修改201503040945
+        //            for (int i = 0; i < (Arry.Length / 7); i++)
+        //            {
+        //                for (int k = 0; k < Messages.Length; k++)
+        //                {
+        //                    if (Messages[k] != null)
+        //                    {
+        //                        if (Messages[k].Contains("OPEN") && Messages[k].Contains(Arry[i, 0]) && Messages[k].Contains(Arry[i, 1]))
+        //                        {
+        //                            if (next == 1)
+        //                            { 
+        //                                textBox1.Invoke(settextbox, Arry[i, 2] + " 存在一处开路"); 
+        //                            }
+        //                            error++;
+        //                        }
+        //                        else if (Messages[k].Contains("SHORT") && Messages[k].Contains(Arry[i, 0]))
+        //                        {
+        //                            for (int j = 0; j < Arry.Length / 7-1; j++)
+        //                            {
+        //                                if (Messages[k].Contains(Arry[j, 0]) && (Arry[j, 0] != Arry[i, 0]))
+        //                                {
+        //                                    if (next == 1)
+        //                                    {
+        //                                        textBox1.Invoke(settextbox, Arry[i, 2] + " 存在一处短路");
+        //                                    }
+        //                                    error++;
+        //                                }
+        //                            }                                   
+        //                        }
+        //                    }
+        //                }
+        //                if (error == 0)
+        //                {
+        //                    textBox1.Invoke(settextbox, Arry[i, 2] + " Pass");
+        //                    next = 0;
+        //                }
+        //                error = 0;
+        //            }
+
+        //            //check = 0;                     //修改201503040945
+        //            if (next != 0)
+        //            {
+        //                next--;
+        //            }
+        //            Thread.CurrentThread.Abort();
+        //        }
+        //    }
+        //}
         private void StartCheck(object arry)
         {
             string[,] Arry = arry as string[,];
+            string[] report = new string[Arry.Length / 7];
+            int r = 0;
             int error = 0;
+            int count = 0;
             SetTextCallback settextbox = new SetTextCallback(SetText);
             while (true)
             {
                 if (check == 2)
                 {
+                    //NEXT = true;
+                    count = 0;
                     check = 0;                     //修改201503040945
                     for (int i = 0; i < (Arry.Length / 7); i++)
                     {
@@ -128,45 +190,72 @@ namespace BX6_Test
                             {
                                 if (Messages[k].Contains("OPEN") && Messages[k].Contains(Arry[i, 0]) && Messages[k].Contains(Arry[i, 1]))
                                 {
-                                    if (next == 1)
-                                    { 
-                                        textBox1.Invoke(settextbox, Arry[i, 2] + " 存在一处开路"); 
-                                    }
+                                    //if (next == 1)
+                                    //{
+                                    //    textBox1.Invoke(settextbox, Arry[i, 2] + " 存在一处开路");
+                                    //    NEXT = false;
+                                    //}
+                                    //error++;
+                                    report[r] = Arry[i, 2] + " 存在一处开路";
                                     error++;
+                                    r++;
                                 }
                                 else if (Messages[k].Contains("SHORT") && Messages[k].Contains(Arry[i, 0]))
                                 {
-                                    for (int j = 0; j < Arry.Length / 7-1; j++)
+                                    for (int j = 0; j < Arry.Length / 7 - 1; j++)
                                     {
                                         if (Messages[k].Contains(Arry[j, 0]) && (Arry[j, 0] != Arry[i, 0]))
                                         {
-                                            if (next == 1)
-                                            {
-                                                textBox1.Invoke(settextbox, Arry[i, 2] + " 存在一处短路");
-                                            }
+                                            //if (next == 1)
+                                            //{
+                                            //    textBox1.Invoke(settextbox, Arry[i, 2] + " 存在一处短路");
+                                            //    NEXT = false;
+                                            //}
+                                            //error++;
+                                            report[r] = Arry[i, 2] + " 存在一处短路";
                                             error++;
+                                            r++;
                                         }
-                                    }                                   
+                                    }
                                 }
                             }
                         }
                         if (error == 0)
                         {
-                            textBox1.Invoke(settextbox, Arry[i, 2] + " Pass");
-                            next = 0;
+                            //textBox1.Invoke(settextbox, Arry[i, 2] + " Pass");
+                            count++;
+                            report[r] = Arry[i, 2] + " Pass";
+                            r++;
                         }
                         error = 0;
                     }
-
                     //check = 0;                     //修改201503040945
-                    if (next != 0)
+                    if (count != (Arry.Length / 7))
                     {
                         next--;
+                        error = 0;
+                        if (next == 0)
+                        {
+                            //NEXT = false;
+                            for (int i = 0; i < Arry.Length / 7; i++)
+                            {
+                                textBox1.Invoke(settextbox, report[i]);
+                            }
+                        }
+                    }
+                    else if (count == (Arry.Length / 7))
+                    {
+                        next = 0;
+                        for (int i = 0; i < Arry.Length / 7; i++)
+                        {
+                            textBox1.Invoke(settextbox, report[i]);
+                        }
                     }
                     Thread.CurrentThread.Abort();
                 }
             }
         }
+
         private void StartListen()
         {
             SetTextCallback settextbox = new SetTextCallback(SetText);
@@ -328,15 +417,15 @@ namespace BX6_Test
             string[] AttentionW = new string[A+1];
             string[] AttentionB = new string[A+1];
 
-            if (checkBox11.Checked && checkBox14.Checked)
+            if (checkBox8.Checked && checkBox11.Checked)
             {
-                AttentionW[0] = "请把XCT / XCTD / XCTB线束连接至各模块";
-                AttentionB[0] = "接触器SNS、SNA、SEF接触器控制线圈及辅助触点接线";
+                AttentionW[0] = "请把XCT线束连接至模块（线束为黑色）";
+                AttentionB[0] = "";
             }
-            else if (checkBox11.Checked && checkBox14.Checked == false)
+            else if (checkBox8.Checked && checkBox11.Checked == false)
             {
-                AttentionW[0] = "请把XCT / XCTD / XCTB线束连接至各模块";
-                AttentionB[0] = "接触器SNS、SNA、SEF、STAT、STB接触器控制线圈及辅助触点接线";
+                AttentionW[0] = "请把XCT、XCTD、XCTB线束连接至模块（线束为黑色）";
+                AttentionB[0] = "";
             }
 
             A = 1;
@@ -348,11 +437,13 @@ namespace BX6_Test
                     AttentionB[A++] = PLCPrm1[i, 7];
                 }
             }
-            MessageBox.Show(string.Join("\n", AttentionW) + "\n\n" + string.Join("\n", AttentionB));
+            //MessageBox.Show(string.Join("\n", AttentionW) + "\n\n" + string.Join("\n", AttentionB));
+            MessageShow messageshow = new MessageShow(string.Join("\n\n", AttentionW) + "\n\n" + string.Join("\n\n", AttentionB));
+            messageshow.ShowDialog();
             #endregion
 
             #region 139/165
-            if (checkBox11.Checked && checkBox14.Checked)
+            if (checkBox8.Checked && checkBox11.Checked)
             {
                 Arry = null;
                 arry = null;
@@ -422,7 +513,7 @@ namespace BX6_Test
                     dataRE = "";
                 }
             }
-            else if (checkBox11.Checked && checkBox14.Checked == false)
+            else if (checkBox8.Checked && checkBox11.Checked == false)
             {
                 Arry = null;
                 arry = null;

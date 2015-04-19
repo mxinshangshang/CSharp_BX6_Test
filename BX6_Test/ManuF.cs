@@ -239,16 +239,16 @@ namespace BX6_Test
             string[] AttentionW = new string[A + 1];
             string[] AttentionB = new string[A + 1];
 
-            //if (checkBox13.Checked && checkBox16.Checked)
-            //{
-            //    AttentionW[0] = "请把XCT / XCTD / XCTB线束连接至各模块";
-            //    AttentionB[0] = "接触器SNS、SNA、SEF接触器控制线圈及辅助触点接线";
-            //}
-            //else if (checkBox13.Checked && checkBox16.Checked == false)
-            //{
-            //    AttentionW[0] = "请把XCT / XCTD / XCTB线束连接至各模块";
-            //    AttentionB[0] = "接触器SNS、SNA、SEF、STAT、STB接触器控制线圈及辅助触点接线";
-            //}
+            if (checkBox10.Checked && checkBox11.Checked)
+            {
+                AttentionW[0] = "请把XCT线束连接至各模块";
+                AttentionB[0] = "";
+            }
+            else if (checkBox10.Checked && checkBox11.Checked == false)
+            {
+                AttentionW[0] = "请把XCT、XCTD、XCTB线束连接至各模块";
+                AttentionB[0] = "";
+            }
 
             A = 1;
             for (int i = 0; i < PLCPrm1.Length / 16; i++)
@@ -259,7 +259,9 @@ namespace BX6_Test
                     AttentionB[A++] = PLCPrm1[i, 15];
                 }
             }
-            MessageBox.Show(string.Join("\n", AttentionW) + "\n\n" + string.Join("\n", AttentionB));
+            //MessageBox.Show(string.Join("\n", AttentionW) + "\n\n" + string.Join("\n", AttentionB));
+            MessageShow messageshow = new MessageShow(string.Join("\n\n", AttentionW) + "\n\n" + string.Join("\n\n", AttentionB));
+            messageshow.ShowDialog();
             #endregion
 
             string a = ": 01 05 08 " + "25" + " FF 00";                 //发送直流矫正PLC指令
@@ -366,20 +368,20 @@ namespace BX6_Test
 
         private void checkBox11_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox11.Checked == true)
-            {
-                for (int i = 0; i < PLCPrm1.Length / 16; i++)
-                {
-                    ((CheckBox)this.Controls.Find("checkBox" + (i + 1), true)[0]).Checked = true;
-                }
-            }
-            if (checkBox11.Checked != true)
-            {
-                for (int i = 0; i < PLCPrm1.Length / 16; i++)
-                {
-                    ((CheckBox)this.Controls.Find("checkBox" + (i + 1), true)[0]).Checked = false;
-                }
-            }
+            //if (checkBox11.Checked == true)
+            //{
+            //    for (int i = 0; i < PLCPrm1.Length / 16; i++)
+            //    {
+            //        ((CheckBox)this.Controls.Find("checkBox" + (i + 1), true)[0]).Checked = true;
+            //    }
+            //}
+            //if (checkBox11.Checked != true)
+            //{
+            //    for (int i = 0; i < PLCPrm1.Length / 16; i++)
+            //    {
+            //        ((CheckBox)this.Controls.Find("checkBox" + (i + 1), true)[0]).Checked = false;
+            //    }
+            //}
         }
 
         //private void button3_Click(object sender, EventArgs e)

@@ -23,6 +23,7 @@ namespace BX6_Test
         private Thread Send;
         string file;
         string PLCCom;
+        string TELECom;
         string JobNum;
 
         string[,] PLCPrm1;
@@ -43,7 +44,7 @@ namespace BX6_Test
             base.WndProc(ref m);
         }
 
-        public Manu(string file, string PLCCom, string[,] PLCPrm1, string[,] PLCPrm2,string jobnum)
+        public Manu(string file, string PLCCom, string[,] PLCPrm1, string[,] PLCPrm2,string jobnum,string TELECom)
         {
             InitializeComponent();
 
@@ -53,6 +54,7 @@ namespace BX6_Test
 
             this.file = file;
             this.PLCCom = PLCCom;
+            this.TELECom = TELECom;
             this.PLCPrm1 = PLCPrm1;
             this.PLCPrm2 = PLCPrm2;
             this.JobNum = jobnum;
@@ -300,7 +302,7 @@ namespace BX6_Test
                 serialPort1.Write(message1, 0, b.Length);
 
                 serialPort1.Close();
-                Form ManuRun = new ManuR(file, PLCCom, PLCPrm1, JobNum);
+                Form ManuRun = new ManuR(file, PLCCom, PLCPrm1, JobNum,TELECom);
                 ManuRun.Show();
             }
             catch

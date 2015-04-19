@@ -29,6 +29,7 @@ namespace BX6_Test
         StreamWriter mySw;
         string file;
         string PLCCom;
+        string TELECom;
         string JobNum;
 
         string[] words = new string[2];
@@ -76,6 +77,8 @@ namespace BX6_Test
         int trackbarValue = 0;
         int firstplace = 0;
         int secondplace = 0;
+        string HWversion = "";
+        string SWversion = "";
         #endregion
 
         //public static AutoResetEvent waitCallCarHandler;
@@ -92,12 +95,13 @@ namespace BX6_Test
             base.WndProc(ref m);
         }
 
-        public ManuR(string file, string PLCCom, string[,] PLCPrm1,string jobnum)
+        public ManuR(string file, string PLCCom, string[,] PLCPrm1,string jobnum,string TELECom)
         {
             InitializeComponent();
 
             this.file = file;
             this.PLCCom = PLCCom;
+            this.TELECom = TELECom;
             this.PLCPrm1 = PLCPrm1;
             this.JobNum = jobnum;
 
@@ -114,6 +118,19 @@ namespace BX6_Test
                 serialPort1.Close();
             }
             serialPort1.Open();
+
+            serialPort2.PortName = TELECom;
+            serialPort2.BaudRate = 9600;
+            serialPort2.DataBits = 8;
+            serialPort2.StopBits = StopBits.One;
+            serialPort2.Parity = Parity.None;
+
+            if (serialPort2.IsOpen == true)
+            {
+                serialPort2.Close();
+            }
+
+            serialPort2.Open();
 
             trackBar1.Maximum = 84000;
             trackBar1.Minimum = 0;
@@ -250,6 +267,66 @@ namespace BX6_Test
 
             }
 
+        }
+
+        public delegate void DeleCheckTextbox(string dataRe);
+        private void CheckTextbox(string dataRe)
+        {
+            textBox1.AppendText(dataRe);
+            //Thread.Sleep(500);
+            //if (dataRe.Length > 150)
+            //{
+            //    HWversion = dataRe.Substring(dataRe.LastIndexOf("\r\nCPLD") + 6, 5).Trim();
+            //    if (HWversion.Contains('V'))
+            //    {
+            //        if (HWversion.Trim().Contains(Properties.Settings.Default.HardwareSetting.Trim()) == false)
+            //        {
+            //            MessageBox.Show("要求硬件版本为： " + Properties.Settings.Default.HardwareSetting + "\n\n" + "实际硬件版本为： " + HWversion);
+            //        }
+            //    }              
+            //    SWversion = dataRe.Substring(dataRe.LastIndexOf("\r\nSoftware version S00x")+23, 10).Trim();
+            //    if(SWversion.Contains('V'))
+            //    {
+            //        if (SWversion.Trim().Contains(Properties.Settings.Default.SoftwareSetting.Trim()) == false)
+            //        {
+            //            MessageBox.Show("要求软件版本为： " + Properties.Settings.Default.SoftwareSetting + "\n\n" + "实际软件版本为： " + SWversion);
+            //        }
+            //    }
+            //}
+
+            Thread.Sleep(500);
+            if (dataRe.Length > 150)
+            {
+                if (dataRe.Substring(dataRe.LastIndexOf("\r\nCPLD") + 6, 5).Trim().Contains('V'))
+                {
+                    HWversion = dataRe.Substring(dataRe.LastIndexOf("\r\nCPLD") + 6, 5).Trim();
+                    if (HWversion.Trim().Contains(Properties.Settings.Default.HardwareSetting.Trim()) == false)
+                    {
+                        MessageBox.Show("要求硬件版本为： " + Properties.Settings.Default.HardwareSetting + "\n\n" + "实际硬件版本为： " + HWversion);
+                    }
+                }
+                if (dataRe.Substring(dataRe.LastIndexOf("\r\nSoftware version S00x") + 23, 10).Trim().Contains('V'))
+                {
+                    SWversion = dataRe.Substring(dataRe.LastIndexOf("\r\nSoftware version S00x") + 23, 10).Trim();
+                    if (SWversion.Trim().Contains(Properties.Settings.Default.SoftwareSetting.Trim()) == false)
+                    {
+                        MessageBox.Show("要求软件版本为： " + Properties.Settings.Default.SoftwareSetting + "\n\n" + "实际软件版本为： " + SWversion);
+                    }
+                }
+            }
+        }
+        private void serialPort2_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            string dataRe;
+            string[] data = new string[1000];
+            byte[] byteRead = new byte[serialPort2.BytesToRead];
+
+            DeleCheckTextbox checktextbox = new DeleCheckTextbox(CheckTextbox);
+
+            serialPort2.Read(byteRead, 0, byteRead.Length);
+
+            dataRe = Encoding.Default.GetString(byteRead);
+            textBox1.Invoke(checktextbox, dataRe);
         }
 
         #endregion
@@ -771,8 +848,9 @@ namespace BX6_Test
 
         private void button1_Click(object sender, EventArgs e)                          //Power On
         {
-            MessageBox.Show("请确认控制柜内所有的断路器在断开状态, ECB印板没有任何插件" + "\n\n" + "然后" + "\n" + "(1)请插上短接端子： XPSU_B、 XSPH、 XKNE、 XKBV、 XKTHMH、 XJH、 XTHMR、 XCTB、 XCTD" + "\n\n" + "(2)请插上从控制柜元器件来的端子： XMAIN、 XRKPH、 XPSU_E、 X24PS、 XJTHS、 XCT" + "\n\n" + "(3)请插上测试设备红色线束的端子： XESE、 XVF、 XTC1、 XTC2、 XISPT、 XKV、 XCAN_EXT"  + "\n\n" + "(4)如果使用 57814139 请接 X1 夹具" + "\n" + "    如果使用 57814138 请接 JTHS 夹具" + "\n\n" + "(5)请把 JTHS 闭合");
-
+            //MessageBox.Show("请确认控制柜内所有的断路器在断开状态, ECB印板没有任何插件" + "\n\n" + "然后" + "\n" + "(1)请插上短接端子： XPSU_B、 XSPH、 XKNE、 XKBV、 XKTHMH、 XJH、 XTHMR、 XCTB、 XCTD" + "\n\n" + "(2)请插上从控制柜元器件来的端子： XMAIN、 XRKPH、 XPSU_E、 X24PS、 XJTHS、 XCT" + "\n\n" + "(3)请插上测试设备红色线束的端子： XESE、 XVF、 XTC1、 XTC2、 XISPT、 XKV、 XCAN_EXT、 RS232串口线"  + "\n\n" + "(4)如果使用 57814139 请接 X1 夹具" + "\n" + "    如果使用 57814138 请接 JTHS 夹具" + "\n\n" + "(5)请把 JTHS 闭合");
+            MessageShow messageshow = new MessageShow("请确认控制柜内所有的断路器在断开状态, ECB印板没有任何插件" + "\n\n" + "然后" + "\n" + "(1)请插上短接端子： XPSU_B、 XSPH、 XKNE、 XKBV、 XKTHMH、 XJH、 XTHMR、 XCTB、 XCTD" + "\n\n" + "(2)请插上从控制柜元器件来的端子： XMAIN、 XRKPH、 XPSU_E、 X24PS、 XJTHS、 XCT" + "\n\n" + "(3)请插上测试设备红色线束的端子： XESE、 XVF、 XTC1、 XTC2、 XISPT、 XKV、 XCAN_EXT、RS232串口线" + "\n\n" + "(4)如果使用 57814139 请接 X1 夹具" + "\n" + "    如果使用 57814138 请接 JTHS 夹具" + "\n\n" + "(5)请把 JTHS 闭合");
+            messageshow.ShowDialog();
             SetTextCallback settextbox = new SetTextCallback(SetText);
             textBox1.Invoke(settextbox, "—————————————————————");
 
@@ -819,11 +897,35 @@ namespace BX6_Test
             encoder = false;
         }
 
-        //private void button2_Click(object sender, EventArgs e)                        //Version Check
+        //private void button2_Click(object sender, EventArgs e)          
         //{
         //    groupBox2.Visible = false;
         //    groupBox3.Visible = false;
         //}
+        private void button2_Click(object sender, EventArgs e)                             //Check Version
+        {
+            string a = "53 43 49 43 5F 49 44 45 4E 54 49 46 59 5F 48 57 3A 3D 31 0D";
+            string[] aa1 = a.Split(' ');
+            byte[] message1 = new byte[aa1.Length];
+            int s = aa1.Length;
+            for (int i = 0; i < aa1.Length; i++)
+            {
+                message1[i] = Convert.ToByte(aa1[i], 16);
+            }
+            serialPort2.Write(message1, 0, s);
+            Thread.Sleep(500);
+
+            a = "53 43 49 43 5F 49 44 45 4E 54 49 46 59 5F 53 57 3A 3D 31 0D";
+            aa1 = a.Split(' ');
+            message1 = new byte[aa1.Length];
+            s = aa1.Length;
+            for (int i = 0; i < aa1.Length; i++)
+            {
+                message1[i] = Convert.ToByte(aa1[i], 16);
+            }
+            serialPort2.Write(message1, 0, s);
+        }
+
 
         private void button3_Click(object sender, EventArgs e)                          //Learning Trip
         {
@@ -839,7 +941,7 @@ namespace BX6_Test
             groupBox2.Visible = false;
             groupBox3.Visible = false;
 
-            MessageBox.Show("请等待液晶屏显示 [    53] 后" + "\n\n" + "再将 107 设为 1" + "\n" + "  将 116 设为 1" + "\n\n" + "然后按确认");
+            MessageBox.Show("请等待液晶屏显示 [    53] 后" + "\n\n" + "再将 107 设为 1" + "\n" + "  将 106 设为 1" + "\n" + "  将 116 设为 1" + "\n\n" + "然后按确认");
 
             Send = new Thread(new ParameterizedThreadStart(SentToPLC));                        //Out of Insp
             Send.IsBackground = true;
@@ -1004,44 +1106,54 @@ namespace BX6_Test
 
         private void button10_Click(object sender, EventArgs e)                         //楼层呼叫3楼
         {
+            floor3 = true;
+            three = true;
+            Third = true;
+            Car3 = true;
             waitCallCarHandler.Set();
             //Send = new Thread(new ParameterizedThreadStart(SentToPLC));
             //Send.IsBackground = true;
             //Send.Start("1D FF");
             button10.ForeColor = Color.LightSeaGreen;
-            floor3 = true;
-            three = true;
-
-            Third = true;
-            Car3 = true;
         }
 
         private void button11_Click(object sender, EventArgs e)                         //楼层呼叫2楼
         {
+            floor2 = true;
+            two = true;
+            Second = true;
+            Car2 = true;
             waitCallCarHandler.Set();
             //Send = new Thread(new ParameterizedThreadStart(SentToPLC));
             //Send.IsBackground = true;
             //Send.Start("1C FF");
             button11.ForeColor = Color.LightSeaGreen;
-            floor2 = true;
-            two = true;
-
-            Second = true;
-            Car2 = true;
         }
 
         private void button12_Click(object sender, EventArgs e)                         //楼层呼叫1楼
         {
+            floor1 = true;
+            one = true;
+            First = true;
+            Car1 = true;
             waitCallCarHandler.Set();
             //Send = new Thread(new ParameterizedThreadStart(SentToPLC));
             //Send.IsBackground = true;
             //Send.Start("1B FF");
             button12.ForeColor = Color.LightSeaGreen;
-            floor1 = true;
-            one = true;
+        }
 
-            First = true;
-            Car1 = true;
+        private void button13_Click(object sender, EventArgs e)                      //Erase EEPROM
+        {
+            string a = "47 43 5F 45 52 41 53 45 5F 45 45 3A 3D 31 0D";
+            string[] aa = a.Split(' ');
+            byte[] message = new byte[aa.Length];
+            int s1 = aa.Length;
+            for (int i = 0; i < aa.Length; i++)
+            {
+                message[i] = Convert.ToByte(aa[i], 16);
+            }
+            serialPort2.Write(message, 0, s1);
         }
 
         private void button15_Click(object sender, EventArgs e)                         //关闭
@@ -1074,7 +1186,7 @@ namespace BX6_Test
                 Send = new Thread(new ParameterizedThreadStart(SentToPLC));
                 Send.IsBackground = true;
                 Send.Start("14 00");
-                Thread.Sleep(1000);
+                Thread.Sleep(500);
                 this.Close();
             }
             Send = new Thread(new ParameterizedThreadStart(SentToPLC));

@@ -102,7 +102,7 @@ namespace BX6_Test
             //{
                 //textBox1.AppendText(text);
 
-                this.textBox1.Text += Environment.NewLine + text;//"\r\n";// "\r\n" + text;
+                this.textBox1.Text += Environment.NewLine + text + "\r\n";//"\r\n";// "\r\n" + text;
                 this.textBox1.SelectionStart = this.textBox1.Text.Length;
                 this.textBox1.ScrollToCaret();
 
@@ -164,17 +164,29 @@ namespace BX6_Test
         #endregion
 
         #region EnableButton
-        private delegate void EnableButton();
+        private delegate void EnableButton1();
         private void enablebutton1()
         {
             this.button1.Enabled = true;
             if (NEXT == true)
             {
                 serialPort1.Close();
+                label7.ForeColor = Color.Green;
+                label7.Text = "功能测试 PASS"; ;
                 Form AutoRun = new AutoR(file, PLCCom, PLCPrm2,Contract,JobNum,PLCPrm,TELECom);
                 AutoRun.Show();                
                 this.Close();
             }
+            else
+            {
+                label7.ForeColor = Color.Red;
+                label7.Text = "功能测试 FAIL！";
+            }
+        }
+        private delegate void EnableButton();
+        private void enablebutton()
+        {
+            this.button1.Enabled = true;
         }
         #endregion
 
@@ -203,38 +215,49 @@ namespace BX6_Test
             SetTextCallback settextbox = new SetTextCallback(SetText);
 
             #region Attention
-            //int A = 0;
-            //for (int i = 0; i < PLCPrm1.Length / 16; i++)
-            //{
-            //    //if (((CheckBox)this.Controls.Find("checkbox" + (i + 1), true)[0]).Checked == true)
-            //    //{
-            //        A++;
-            //    //}
-            //}
-            //string[] AttentionW = new string[A + 1];
-            //string[] AttentionB = new string[A + 1];
+            int A = 0;
+            for (int i = 0; i < PLCPrm1.Length / 16; i++)
+            {
+                //if (((CheckBox)this.Controls.Find("checkbox" + (i + 1), true)[0]).Checked == true)
+                //{
+                A++;
+                //}
+            }
+            string[] AttentionW = new string[A + 1];
+            string[] AttentionB = new string[A + 1];
 
-            ////if (checkBox13.Checked && checkBox16.Checked)
-            ////{
-            ////    AttentionW[0] = "请把XCT / XCTD / XCTB线束连接至各模块";
-            ////    AttentionB[0] = "接触器SNS、SNA、SEF接触器控制线圈及辅助触点接线";
-            ////}
-            ////else if (checkBox13.Checked && checkBox16.Checked == false)
-            ////{
-            ////    AttentionW[0] = "请把XCT / XCTD / XCTB线束连接至各模块";
-            ////    AttentionB[0] = "接触器SNS、SNA、SEF、STAT、STB接触器控制线圈及辅助触点接线";
-            ////}
+            for (int i = 0; i < PLCPrm1.Length / 16; i++)
+            {
+                if (PLCPrm1[i, 1] == "57814139")
+                {
+                    for (int J = 0; J < PLCPrm1.Length / 16; J++)
+                    {
+                        if (PLCPrm1[J, 1] == "578141165")
+                        {
+                            AttentionW[0] = "请把XCT线束连接至模块（线束为黑色）";
+                            AttentionB[0] = "";
+                        }
+                        else if (J == PLCPrm1.Length / 16 - 1)
+                        {
+                            AttentionW[0] = "请把XCT、XCTD、XCTB线束连接至模块（线束为黑色）";
+                            AttentionB[0] = "";
+                        }
+                    }
+                }
+            }
 
-            //A = 1;
-            //for (int i = 0; i < PLCPrm1.Length / 16; i++)
-            //{
-            //    //if (((CheckBox)this.Controls.Find("checkbox" + (i + 1), true)[0]).Checked == true)
-            //    //{
-            //        AttentionW[A] = PLCPrm1[i, 14];
-            //        AttentionB[A++] = PLCPrm1[i, 15];
-            //    //}
-            //}
+            A = 1;
+            for (int i = 0; i < PLCPrm1.Length / 16; i++)
+            {
+                //if (((CheckBox)this.Controls.Find("checkbox" + (i + 1), true)[0]).Checked == true)
+                //{
+                AttentionW[A] = PLCPrm1[i, 14];
+                AttentionB[A++] = PLCPrm1[i, 15];
+                //}
+            }
             //MessageBox.Show(string.Join("\n", AttentionW) + "\n\n" + string.Join("\n", AttentionB));
+            MessageShow messageshow = new MessageShow(string.Join("\n\n", AttentionW) + "\n\n" + string.Join("\n\n", AttentionB));
+            messageshow.ShowDialog();
             #endregion
 
             string a = ": 01 05 08 12 FF 00";
@@ -257,7 +280,7 @@ namespace BX6_Test
             //    if (o is Label && Convert.ToInt32(o.Name.Substring(6), 10) < 6 && Convert.ToInt32(o.Name.Substring(6), 10) > 0)
             //    {
             //        int num = Convert.ToInt32(o.Name.Substring(8), 10) - 1;
-            for (int I = 1; I <= 5; I++)
+            for (int I = 1; I <= PLCPrm1.Length / 16; I++)
             {
                 if (((Label)this.Controls.Find("label" + I, true)[0]).Visible == true)
                 {
@@ -601,15 +624,36 @@ namespace BX6_Test
 
             #endregion
 
-            MessageBox.Show("测试结束" + "\n\n" + "请拔下所有接插件，并断开所有断路器");
-            EnableButton ebutton1 = new EnableButton(enablebutton1);
-            button1.Invoke(ebutton1);
-            Thread.CurrentThread.Abort();
+
+            if (NEXT == true)
+            {
+                //MessageBox.Show("功能测试 PASS" + "\n\n" + "请拔下所有接插件，并断开所有断路器");
+                ShowResult showresult = new ShowResult("功能测试 PASS");
+                showresult.ShowDialog();
+                EnableButton1 ebutton1 = new EnableButton1(enablebutton1);
+                button1.Invoke(ebutton1);
+                Thread.CurrentThread.Abort();
+            }
+            else
+            {
+                //MessageBox.Show("功能测试 FAIL" + "\n\n" + "请拔下所有接插件，并断开所有断路器");
+                ShowResult showresult = new ShowResult("功能测试 FAIL");
+                showresult.ShowDialog();
+                EnableButton ebutton = new EnableButton(enablebutton);
+                button1.Invoke(ebutton);
+                Thread.CurrentThread.Abort();
+            }
+            //MessageBox.Show("测试结束" + "\n\n" + "请拔下所有接插件，并断开所有断路器");
+            //EnableButton ebutton1 = new EnableButton(enablebutton1);
+            //button1.Invoke(ebutton1);
+            //Thread.CurrentThread.Abort();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             button1.Enabled = false;
+            label7.ForeColor = Color.Red;
+            label7.Text = "功能测试运行中...";
             SetTextCallback settextbox = new SetTextCallback(SetText);
             textBox1.Invoke(settextbox, "——————————————————————");
             Thread F = new Thread(Function);

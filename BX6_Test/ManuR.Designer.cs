@@ -75,6 +75,9 @@
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.label10 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button13 = new System.Windows.Forms.Button();
+            this.serialPort2 = new System.IO.Ports.SerialPort(this.components);
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -121,7 +124,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(309, 85);
+            this.button3.Location = new System.Drawing.Point(309, 102);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(135, 23);
             this.button3.TabIndex = 11;
@@ -385,7 +388,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(309, 187);
+            this.button6.Location = new System.Drawing.Point(309, 170);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(135, 23);
             this.button6.TabIndex = 18;
@@ -585,12 +588,38 @@
             this.label10.TabIndex = 49;
             this.label10.Text = "高压危险区域";
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(309, 68);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(135, 23);
+            this.button2.TabIndex = 52;
+            this.button2.Text = "Check Version";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button13
+            // 
+            this.button13.Location = new System.Drawing.Point(309, 204);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(135, 23);
+            this.button13.TabIndex = 53;
+            this.button13.Text = "Erease EEPROM";
+            this.button13.UseVisualStyleBackColor = true;
+            this.button13.Click += new System.EventHandler(this.button13_Click);
+            // 
+            // serialPort2
+            // 
+            this.serialPort2.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort2_DataReceived);
+            // 
             // ManuR
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1174, 482);
+            this.Controls.Add(this.button13);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.pictureBox4);
             this.Controls.Add(this.pictureBox3);
             this.Controls.Add(this.label10);
@@ -686,5 +715,8 @@
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button13;
+        private System.IO.Ports.SerialPort serialPort2;
     }
 }

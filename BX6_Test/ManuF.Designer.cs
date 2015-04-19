@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManuF));
             this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -52,6 +53,9 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.checkBox11 = new System.Windows.Forms.CheckBox();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // serialPort1
@@ -66,7 +70,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox1.Size = new System.Drawing.Size(315, 314);
+            this.textBox1.Size = new System.Drawing.Size(315, 353);
             this.textBox1.TabIndex = 4;
             // 
             // groupBox1
@@ -198,7 +202,7 @@
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(924, 16);
+            this.textBox2.Location = new System.Drawing.Point(1014, 16);
             this.textBox2.Multiline = true;
             this.textBox2.Name = "textBox2";
             this.textBox2.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
@@ -207,7 +211,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(12, 372);
+            this.button1.Location = new System.Drawing.Point(12, 415);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(144, 23);
             this.button1.TabIndex = 8;
@@ -217,7 +221,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(183, 372);
+            this.button2.Location = new System.Drawing.Point(183, 415);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(144, 23);
             this.button2.TabIndex = 9;
@@ -264,19 +268,39 @@
             // checkBox11
             // 
             this.checkBox11.AutoSize = true;
-            this.checkBox11.Location = new System.Drawing.Point(924, 115);
+            this.checkBox11.Location = new System.Drawing.Point(364, 422);
             this.checkBox11.Name = "checkBox11";
-            this.checkBox11.Size = new System.Drawing.Size(48, 16);
+            this.checkBox11.Size = new System.Drawing.Size(84, 16);
             this.checkBox11.TabIndex = 15;
-            this.checkBox11.Text = "全选";
+            this.checkBox11.Text = "checkBox11";
             this.checkBox11.UseVisualStyleBackColor = true;
             this.checkBox11.CheckedChanged += new System.EventHandler(this.checkBox11_CheckedChanged);
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Location = new System.Drawing.Point(349, 401);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(536, 44);
+            this.groupBox6.TabIndex = 55;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "XCTB bridge";
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox2.BackgroundImage")));
+            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox2.Location = new System.Drawing.Point(905, 352);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(97, 86);
+            this.pictureBox2.TabIndex = 56;
+            this.pictureBox2.TabStop = false;
             // 
             // ManuF
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(908, 412);
+            this.ClientSize = new System.Drawing.Size(1014, 450);
+            this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.checkBox9);
             this.Controls.Add(this.checkBox10);
             this.Controls.Add(this.checkBox8);
@@ -299,11 +323,13 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.groupBox6);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "ManuF";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "手动测试——功能";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -334,5 +360,7 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.CheckBox checkBox11;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.PictureBox pictureBox2;
     }
 }

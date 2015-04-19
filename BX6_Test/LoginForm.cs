@@ -536,26 +536,26 @@ namespace BX6_Test
             {
                 try
                 {
-                    //if (textBox1.Text.Contains("LX-560A") && serialPort1.IsOpen == true)              //修改
-                    //{
-                    //    MessageBox.Show("PLC串口打开成功！" + "\r\n" + "线材仪连接成功", "提示");
+                    if (textBox1.Text.Contains("LX-560A"))// && serialPort1.IsOpen == true)              //修改
+                    {
+                        MessageBox.Show("PLC串口打开成功！" + "\r\n" + "线材仪连接成功", "提示");
 
-                    //    serialPort1.Close();
+                        serialPort1.Close();
                         textBox5.Clear();
-                        //Form AutoWire = new AutoW(file, PLCCom.Text, PLCPrm3, PLCPrm4, textBox2.Text, textBox3.Text, PLCPrm, TELECom.Text);
-                        //AutoWire.Show();
+                        Form AutoWire = new AutoW(file, PLCCom.Text, PLCPrm3, PLCPrm4, textBox2.Text, textBox3.Text, PLCPrm, TELECom.Text);
+                        AutoWire.Show();
 
                         //Form AutoFun = new AutoF(file, PLCCom.Text, PLCPrm4, PLCPrm3, textBox2.Text, textBox3.Text, PLCPrm, TELECom.Text);//功能测试单项
                         //AutoFun.Show();
 
-                        Form AutoRun = new AutoR(file, PLCCom.Text, PLCPrm4, textBox2.Text, textBox3.Text, PLCPrm,TELECom.Text);//运行测试单项
-                        AutoRun.Show();
-                    //}
-                    //else
-                    //{
-                    //    MessageBox.Show("线材仪连接失败请确保线材仪连接正确" + "\r\n" + "并复位线材仪后重启程序", "提示");
-                    //    serialPort1.Close();
-                    //}
+                        //Form AutoRun = new AutoR(file, PLCCom.Text, PLCPrm4, textBox2.Text, textBox3.Text, PLCPrm,TELECom.Text);//运行测试单项
+                        //AutoRun.Show();
+                    }
+                    else
+                    {
+                        MessageBox.Show("线材仪连接失败请确保线材仪连接正确" + "\r\n" + "并复位线材仪后重启程序", "提示");
+                        serialPort1.Close();
+                    }
                 }
                 catch
                 {
@@ -573,7 +573,7 @@ namespace BX6_Test
             if (password == Properties.Settings.Default.PasswordSetting)
             {
                 folderPath = Properties.Settings.Default.TestResultPathSetting;
-                file = folderPath + "/" + DateTime.Now.ToString("yyyy-MM-dd HHmmss") + ".txt";
+                file = folderPath + "/" + textBox2.Text + " test result " + DateTime.Now.ToString("yyyy-MM-dd HHmmss") + ".txt";
 
                 try
                 {
@@ -586,19 +586,19 @@ namespace BX6_Test
                 }
                 try
                 {
-                    //if (textBox1.Text.Contains("LX-560A") && serialPort1.IsOpen == true)                        //修改   
-                    //{
-                    //    MessageBox.Show("PLC串口打开成功！" + "\r\n" + "线材仪连接成功", "提示");
-                    serialPort1.Close();
+                    if (textBox1.Text.Contains("LX-560A"))// && serialPort1.IsOpen == true)                        //修改   
+                    {
+                        MessageBox.Show("PLC串口打开成功！" + "\r\n" + "线材仪连接成功", "提示");
+                        serialPort1.Close();
 
-                    Form Manu = new Manu(file, PLCCom.Text, PLCPrm1, PLCPrm2, textBox3.Text);
-                    Manu.Show();
-                    //}
-                    //else
-                    //{
-                    //    MessageBox.Show("线材仪连接失败请确保线材仪连接正确" + "\r\n" + "并复位线材仪后重启程序", "提示");
-                    //    serialPort1.Close();
-                    //}
+                        Form Manu = new Manu(file, PLCCom.Text, PLCPrm1, PLCPrm2, textBox3.Text, TELECom.Text);
+                        Manu.Show();
+                    }
+                    else
+                    {
+                        MessageBox.Show("线材仪连接失败请确保线材仪连接正确" + "\r\n" + "并复位线材仪后重启程序", "提示");
+                        serialPort1.Close();
+                    }
                 }
                 catch
                 {

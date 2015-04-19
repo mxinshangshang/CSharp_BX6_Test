@@ -107,6 +107,12 @@
     <Compile Include="AutoF.Designer.cs">
       <DependentUpon>AutoF.cs</DependentUpon>
     </Compile>
+    <Compile Include="MessageShow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MessageShow.Designer.cs">
+      <DependentUpon>MessageShow.cs</DependentUpon>
+    </Compile>
     <Compile Include="Password.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,6 +127,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShowResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShowResult.Designer.cs">
+      <DependentUpon>ShowResult.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AutoReport.resx">
       <DependentUpon>AutoReport.cs</DependentUpon>
     </EmbeddedResource>
@@ -151,6 +163,9 @@
     <EmbeddedResource Include="AutoF.resx">
       <DependentUpon>AutoF.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="MessageShow.resx">
+      <DependentUpon>MessageShow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Password.resx">
       <DependentUpon>Password.cs</DependentUpon>
     </EmbeddedResource>
@@ -167,6 +182,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="ShowResult.resx">
+      <DependentUpon>ShowResult.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

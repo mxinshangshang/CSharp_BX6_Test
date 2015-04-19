@@ -51,8 +51,8 @@ namespace BX6_Test
         string[] datare = new string[60];
         int iData = 0;
 
-        string[] messages = new string[100];
-        string[] Messages = new string[100];
+        string[] messages = new string[50];
+        string[] Messages = new string[50];
         int mn = 0;
         #endregion
 
@@ -80,8 +80,14 @@ namespace BX6_Test
             this.JobNum = jobnum;
             this.PLCPrm = PLCPrm;
 
+            for (int i = 0; i < 4; i++)
+            {
+                ((Label)this.Controls.Find("label" + (i + 1), true)[0]).Visible = false;
+            }
+
             for (int i = 0; i < PLCPrm1.Length / 8; i++)
             {
+                ((Label)this.Controls.Find("label" + (i + 1), true)[0]).Visible = true;
                 ((Label)this.Controls.Find("label" + (i + 1), true)[0]).Text = PLCPrm1[i, 0];
             }
 
@@ -134,12 +140,17 @@ namespace BX6_Test
         private void StartCheck(object arry)
         {
             string[,] Arry = arry as string[,];
+            string[] report = new string[Arry.Length / 7];
+            int r = 0;
             int error = 0;
+            int count = 0;
             SetTextCallback settextbox = new SetTextCallback(SetText);
             while (true)
             {
                 if (check == 2)
                 {
+                    //NEXT = true;
+                    count = 0;
                     check = 0;                     //修改201503040945
                     for (int i = 0; i < (Arry.Length / 7); i++)
                     {
@@ -149,12 +160,15 @@ namespace BX6_Test
                             {
                                 if (Messages[k].Contains("OPEN") && Messages[k].Contains(Arry[i, 0]) && Messages[k].Contains(Arry[i, 1]))
                                 {
-                                    if (next == 1)
-                                    {
-                                        textBox1.Invoke(settextbox, Arry[i, 2] + " 存在一处开路");
-                                    }
+                                    //if (next == 1)
+                                    //{
+                                    //    textBox1.Invoke(settextbox, Arry[i, 2] + " 存在一处开路");
+                                    //    NEXT = false;
+                                    //}
+                                    //error++;
+                                    report[r] = Arry[i, 2] + " 存在一处开路";
                                     error++;
-                                    NEXT = false;
+                                    r++;
                                 }
                                 else if (Messages[k].Contains("SHORT") && Messages[k].Contains(Arry[i, 0]))
                                 {
@@ -162,12 +176,15 @@ namespace BX6_Test
                                     {
                                         if (Messages[k].Contains(Arry[j, 0]) && (Arry[j, 0] != Arry[i, 0]))
                                         {
-                                            if (next == 1)
-                                            {
-                                                textBox1.Invoke(settextbox, Arry[i, 2] + " 存在一处短路");
-                                            }
+                                            //if (next == 1)
+                                            //{
+                                            //    textBox1.Invoke(settextbox, Arry[i, 2] + " 存在一处短路");
+                                            //    NEXT = false;
+                                            //}
+                                            //error++;
+                                            report[r] = Arry[i, 2] + " 存在一处短路";
                                             error++;
-                                            NEXT = false;
+                                            r++;
                                         }
                                     }
                                 }
@@ -175,16 +192,34 @@ namespace BX6_Test
                         }
                         if (error == 0)
                         {
-                            textBox1.Invoke(settextbox, Arry[i, 2] + " Pass");
-                            next = 0;
+                            //textBox1.Invoke(settextbox, Arry[i, 2] + " Pass");
+                            count++;
+                            report[r] = Arry[i, 2] + " Pass";
+                            r++;
                         }
                         error = 0;
                     }
-
                     //check = 0;                     //修改201503040945
-                    if (next != 0)
+                    if (count != (Arry.Length / 7))
                     {
                         next--;
+                        error = 0;
+                        if (next == 0)
+                        {
+                            NEXT = false;
+                            for (int i = 0; i < Arry.Length / 7; i++)
+                            {
+                                textBox1.Invoke(settextbox, report[i]);
+                            }
+                        }
+                    }
+                    else if (count == (Arry.Length / 7))
+                    {
+                        next = 0;
+                        for (int i = 0; i < Arry.Length / 7; i++)
+                        {
+                            textBox1.Invoke(settextbox,report[i]);
+                        }
                     }
                     Thread.CurrentThread.Abort();
                 }
@@ -275,25 +310,31 @@ namespace BX6_Test
         #endregion
 
         #region EnableButton
-        private delegate void EnableButton();
+        private delegate void EnableButton1();
         private void enablebutton1()
         {
             this.button1.Enabled = true;
             if (NEXT == true)
             {
                 serialPort1.Close();
+                label7.ForeColor = Color.Green;
+                label7.Text = "连线测试 PASS";
                 Form AutoFun = new AutoF(file, PLCCom, PLCPrm2, PLCPrm1,Contract,JobNum,PLCPrm,TELECom);
                 AutoFun.Show();
                 this.Close();
             }
+            else
+            {
+                label7.ForeColor = Color.Red;
+                label7.Text = "连线测试 FAIL！";
+            }
         }
-        #region EnableButton
-        private delegate void EnableButton1();
+
+        private delegate void EnableButton();
         private void enablebutton()
         {
             this.button1.Enabled = true;
         }
-        #endregion
         #endregion
 
         private string GetLRC(string a)                                                 //计算LRC校验位
@@ -399,13 +440,13 @@ namespace BX6_Test
                     {
                         if (PLCPrm1[J, 1] == "578141165")
                         {
-                            AttentionW[0] = "请把XCT / XCTD / XCTB线束连接至各模块";
-                            AttentionB[0] = "接触器SNS、SNA、SEF接触器控制线圈及辅助触点接线";
+                            AttentionW[0] = "请把XCT线束连接至模块（线束为黑色）";
+                            AttentionB[0] = "";
                         }
                         else if (J == PLCPrm1.Length / 8 - 1)
                         {
-                            AttentionW[0] = "请把XCT / XCTD / XCTB线束连接至各模块";
-                            AttentionB[0] = "接触器SNS、SNA、SEF、STAT、STB接触器控制线圈及辅助触点接线";
+                            AttentionW[0] = "请把XCT、XCTD、XCTB线束连接至模块（线束为黑色）";
+                            AttentionB[0] = "";
                         }
                     }
                 }
@@ -417,15 +458,17 @@ namespace BX6_Test
                 AttentionW[A] = PLCPrm1[i, 6];
                 AttentionB[A++] = PLCPrm1[i, 7];
             }
-            for (int i = 0; i < PLCPrm2.Length / 16; i++)
-            {
-                if (PLCPrm2[i, 14].Trim() != "")
-                {
-                    AttentionW[A] = PLCPrm2[i, 14];
-                    AttentionB[A++] = PLCPrm2[i, 15];
-                }
-            }
-            MessageBox.Show(string.Join("\n", AttentionW) + "\n\n" + string.Join("\n", AttentionB));
+            //for (int i = 0; i < PLCPrm2.Length / 16; i++)
+            //{
+            //    if (PLCPrm2[i, 14].Trim() != "")
+            //    {
+            //        AttentionW[A] = PLCPrm2[i, 14];
+            //        AttentionB[A++] = PLCPrm2[i, 15];
+            //    }
+            //}
+            //MessageBox.Show(string.Join("\n", AttentionW) + "\n\n" + string.Join("\n", AttentionB));
+            MessageShow messageshow = new MessageShow(string.Join("\n\n", AttentionW) + "\n\n" + string.Join("\n\n", AttentionB));
+            messageshow.ShowDialog();
             #endregion
 
             #region 139/165
@@ -584,7 +627,7 @@ namespace BX6_Test
             //    if (o is Label && Convert.ToInt32(o.Name.Substring(5), 10) < 6 && Convert.ToInt32(o.Name.Substring(5), 10) > 0)
             //    {
             //        int num = Convert.ToInt32(o.Name.Substring(5), 10) - 1;
-            for (int i = 1; i <= 5; i++)
+            for (int i = 1; i <= PLCPrm1.Length / 8; i++)
             {
                 if (((Label)this.Controls.Find("label" + i, true)[0]).Visible == true)
                 {
@@ -765,16 +808,36 @@ namespace BX6_Test
             }
             #endregion
 
-            MessageBox.Show("测试结束");
-            EnableButton ebutton1 = new EnableButton(enablebutton1);
-            button1.Invoke(ebutton1);
+            if (NEXT == true)
+            {
+                //MessageBox.Show("连线测试 PASS" + "\n\n" + "请拔下所有接插件，并断开所有断路器");
+                ShowResult showresult = new ShowResult("连线测试 PASS");
+                showresult.ShowDialog();
+                EnableButton1 ebutton1 = new EnableButton1(enablebutton1);
+                button1.Invoke(ebutton1);
+                Thread.CurrentThread.Abort();
+            }
+            else
+            {
+                //MessageBox.Show("连线测试 FAIL" + "\n\n" + "请拔下所有接插件，并断开所有断路器");
+                ShowResult showresult = new ShowResult("连线测试 FAIL");
+                showresult.ShowDialog();
+                EnableButton ebutton = new EnableButton(enablebutton);
+                button1.Invoke(ebutton);
+                Thread.CurrentThread.Abort();
+            }
+            //MessageBox.Show("测试结束");
+            //EnableButton ebutton1 = new EnableButton(enablebutton1);
+            //button1.Invoke(ebutton1);
 
-            Thread.CurrentThread.Abort();
+            //Thread.CurrentThread.Abort();
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             button1.Enabled = false;
+            label7.ForeColor = Color.Red;
+            label7.Text = "连线测试运行中...";
             SetTextCallback settextbox = new SetTextCallback(SetText);
             textBox1.Invoke(settextbox, "——————————————————————");
             Thread C = new Thread(Connection);

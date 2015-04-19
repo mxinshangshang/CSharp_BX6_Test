@@ -73,6 +73,8 @@ namespace BX6_Test
         bool Second = false;
         bool Third = false;
         bool NEXT = true;
+        bool version = false;
+        public bool closeit = false;
 
         int error1 = 0;
         int error2 = 0;
@@ -285,13 +287,26 @@ namespace BX6_Test
         private void CheckTextbox(string dataRe)
         {
             textBox1.AppendText(dataRe);
-            if (dataRe.Contains("CPLD"))
-            {
-                HWversion = dataRe.Split(' ')[1];
-            }
-            if (dataRe.Contains("Software version"))
-            {
-                SWversion = dataRe.Split(' ')[3];
+            Thread.Sleep(800);
+            if (dataRe.Length > 150)
+            {              
+                if (dataRe.Substring(dataRe.LastIndexOf("\r\nCPLD") + 6, 5).Trim().Contains('V'))
+                {
+                    HWversion = dataRe.Substring(dataRe.LastIndexOf("\r\nCPLD") + 6, 5).Trim();
+                    //if (HWversion.Trim().Contains(Properties.Settings.Default.HardwareSetting.Trim()) == false)
+                    //{
+                    //    MessageBox.Show("要求硬件版本为： " + Properties.Settings.Default.HardwareSetting + "\n\n" + "实际硬件版本为： " + HWversion);
+                    //}
+                }
+                if (dataRe.Substring(dataRe.LastIndexOf("\r\nSoftware version S00x") + 23, 10).Trim().Contains('V'))
+                {
+                    SWversion = dataRe.Substring(dataRe.LastIndexOf("\r\nSoftware version S00x") + 23, 10).Trim();
+                    //if (SWversion.Trim().Contains(Properties.Settings.Default.SoftwareSetting.Trim()) == false)
+                    //{
+                    //    MessageBox.Show("要求软件版本为： " + Properties.Settings.Default.SoftwareSetting + "\n\n" + "实际软件版本为： " + SWversion);
+                    //}
+                }
+                version = true;
             }
         }
         private void serialPort2_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -312,11 +327,17 @@ namespace BX6_Test
 
         #region EnableButton
         private delegate void EnableButton();
-        private void enablebutton1()
+        private void enablebutton()
         {
             this.button19.Enabled = true;
-            Form AutoReport = new AutoReport(NEXT, PLCCom);
-            AutoReport.Show();    
+            AutoReport AutoReport = new AutoReport(NEXT, PLCCom);
+            //AutoReport.Show();
+            AutoReport.GetOrder(this);
+            AutoReport.ShowDialog();
+            if (closeit == true)
+            {
+                this.Close();
+            }
         }
         #endregion
 
@@ -921,14 +942,16 @@ namespace BX6_Test
 
         private void Running()                                                          //运行测试专属线程
         {
-            if (PLCPrm[10] == 1)
-            {
-                MessageBox.Show("请确认控制柜内所有的断路器在断开状态, ECB印板没有任何插件" + "\n\n" + "然后" + "\n" + "(1)请插上短接端子： XPSU_B、 XSPH、 XKNE、 XKBV、 XKTHMH、 XJH、 XTHMR、 XCTB、 XCTD" + "\n\n" + "(2)请插上从控制柜元器件来的端子： XMAIN、 XRKPH、 XPSU_E、 X24PS、 XJTHS、 XCT" + "\n\n" + "(3)请插上测试设备红色线束的端子： XESE、 XVF、 XTC1、 XTC2、 XISPT、 XKV、 XCAN_EXT" + "\n\n" + "(4)如果使用 57814139 请接 X1 夹具" + "\n" + "    如果使用 57814138 请接 JTHS 夹具" + "\n\n" + "(5)请把 JTHS 闭合");
-            }
+            //if (PLCPrm[10] == 1)
+            //{
+                //MessageBox.Show("请确认控制柜内所有的断路器在断开状态, ECB印板没有任何插件" + "\n\n" + "然后" + "\n" + "(1)请插上短接端子： XPSU_B、 XSPH、 XKNE、 XKBV、 XKTHMH、 XJH、 XTHMR、 XCTB、 XCTD" + "\n\n" + "(2)请插上从控制柜元器件来的端子： XMAIN、 XRKPH、 XPSU_E、 X24PS、 XJTHS、 XCT" + "\n\n" + "(3)请插上测试设备红色线束的端子： XESE、 XVF、 XTC1、 XTC2、 XISPT、 XKV、 XCAN_EXT、RS232串口线" + "\n\n" + "(4)如果使用 57814139 请接 X1 夹具" + "\n" + "    如果使用 57814138 请接 JTHS 夹具" + "\n\n" + "(5)请把 JTHS 闭合");
+            //}
             //if (PLCPrm[9] == 1)
             //{
             //    MessageBox.Show("请确认控制柜内所有的断路器在断开状态（ECB印板没有任何插件）" + "\n\n" + "然后" + "\n" + "(1)请把端子 XCAN_EXT、 XVF、 XTC1、 XTC2、 XESE、 XISPT、 XMAIN、 XPSU_E、 XRKPH、 XKV、 X24PS插上" + "\n\n" + "(2)请把短接端子 XPSV_B、 XSPH、 XKBV、 XKNE、 XCTB、 XCTD、 XJH、 XTHMR、 XKTHMH 插上" + "\n\n" + "(3)请接 JTHS 夹具" + "\n\n" + "(4)请把 JTHS闭合");
             //}
+            MessageShow messageshow = new MessageShow("请确认控制柜内所有的断路器在断开状态, ECB印板没有任何插件" + "\n\n" + "然后" + "\n" + "(1)请插上短接端子： XPSU_B、 XSPH、 XKNE、 XKBV、 XKTHMH、 XJH、 XTHMR、 XCTB、 XCTD" + "\n\n" + "(2)请插上从控制柜元器件来的端子： XMAIN、 XRKPH、 XPSU_E、 X24PS、 XJTHS、 XCT" + "\n\n" + "(3)请插上测试设备红色线束的端子： XESE、 XVF、 XTC1、 XTC2、 XISPT、 XKV、 XCAN_EXT、RS232串口线" + "\n\n" + "(4)如果使用 57814139 请接 X1 夹具" + "\n" + "    如果使用 57814138 请接 JTHS 夹具" + "\n\n" + "(5)请把 JTHS 闭合");
+            messageshow.ShowDialog();
             
             int firstplace = 0;
             int secondplace = 0;
@@ -964,7 +987,8 @@ namespace BX6_Test
 
 
             Thread.Sleep(25000);
-            MessageBox.Show("请等待液晶屏显示 [    53] 后" + "\n\n" + "然后按确认");
+            //MessageBox.Show("请等待液晶屏显示 [    53] 后" + "\n\n" + "然后按确认");
+            MessageBox.Show("请等待液晶屏显示 [    53] 后" + "\n\n" + "再将 107 设为 1" + "\n" + "   将 106 设为 1" + "\n" + "   将 116 设为 1" + "\n\n" + "然后按确认");
 
             button1.BackColor = Color.LightGray;                                //Check Version
             button13.BackColor = Color.LightSeaGreen;
@@ -980,7 +1004,7 @@ namespace BX6_Test
                     message1[i] = Convert.ToByte(aa1[i], 16);
                 }
                 serialPort2.Write(message1, 0, s);
-                Thread.Sleep(2000);
+                Thread.Sleep(500);
 
                 a = "53 43 49 43 5F 49 44 45 4E 54 49 46 59 5F 53 57 3A 3D 31 0D";
                 aa1 = a.Split(' ');
@@ -991,21 +1015,21 @@ namespace BX6_Test
                     message1[i] = Convert.ToByte(aa1[i], 16);
                 }
                 serialPort2.Write(message1, 0, s);
-                Thread.Sleep(3000);
-                if (HWversion.Contains(Properties.Settings.Default.HardwareSetting) == false)
+                Thread.Sleep(1500);
+                if (HWversion.Trim().Contains(Properties.Settings.Default.HardwareSetting.Trim()) == false)
                 {
                     MessageBox.Show("要求硬件版本为： " + Properties.Settings.Default.HardwareSetting + "\n\n" + "实际硬件版本为： " + HWversion);
                 }
-                if (SWversion.Contains(Properties.Settings.Default.SoftwareSetting) == false)
+                if (SWversion.Trim().Contains(Properties.Settings.Default.SoftwareSetting.Trim()) == false)
                 {
                     MessageBox.Show("要求软件版本为： " + Properties.Settings.Default.SoftwareSetting + "\n\n" + "实际软件版本为： " + SWversion);
-                }
+                }                
             }
 
             button13.BackColor = Color.LightGray;
             button3.BackColor = Color.LightSeaGreen;
 
-            MessageBox.Show("请等待液晶屏显示 [    53] 后" + "\n\n" + "再将 107 设为 1" + "\n" + "   将 116 设为 1" + "\n\n" + "然后按确认");
+           // MessageBox.Show("请等待液晶屏显示 [    53] 后" + "\n\n" + "再将 107 设为 1" + "\n" + "   将 106 设为 1" + "\n" + "   将 116 设为 1" + "\n\n" + "然后按确认");
             encoder = false;
             Thread.Sleep(500);
             encoder = false;
@@ -1108,9 +1132,9 @@ namespace BX6_Test
             button8.ForeColor = Color.Black;
             Thread.Sleep(500);
             encoder = true;
-
-            Thread.Sleep(1500);
             runup = false;
+            Thread.Sleep(1500);
+            //修改
             rundown = false;
             stoprun = true;
             goground = false;
@@ -1152,10 +1176,12 @@ namespace BX6_Test
             button9.ForeColor = Color.Black;
             Thread.Sleep(500);
             encoder = true;
+            Thread.Sleep(500);
+            encoder = true;
 
+            rundown = false;
             Thread.Sleep(1500);
             runup = false;
-            rundown = false;
             stoprun = true;
             goground = false;
 
@@ -1170,6 +1196,8 @@ namespace BX6_Test
             message1 = System.Text.Encoding.ASCII.GetBytes(b);
             serialPort1.Write(message1, 0, b.Length);
             button16.Invoke(show16);
+            Thread.Sleep(500);
+            encoder = true;
             Thread.Sleep(500);
             encoder = true;
 
@@ -1206,7 +1234,7 @@ namespace BX6_Test
             goground = true;
 
 
-            Thread.Sleep(20000);
+            Thread.Sleep(23000);
 
             if (error2 == 0)
             {
@@ -1228,6 +1256,8 @@ namespace BX6_Test
             b = GetLRC(a);
             message1 = System.Text.Encoding.ASCII.GetBytes(b);
             serialPort1.Write(message1, 0, b.Length);
+            Thread.Sleep(500);
+            encoder = true;
             Thread.Sleep(500);
             encoder = true;
             Door = new Thread(OpenCloseDoor);
@@ -1255,6 +1285,8 @@ namespace BX6_Test
             floor3 = true;
             Thread.Sleep(500);
             encoder = true;
+            Thread.Sleep(500);
+            encoder = true;
             First = false;
             Second = false;
             Thread.Sleep(2000);
@@ -1273,6 +1305,8 @@ namespace BX6_Test
             serialPort1.Write(message1, 0, b.Length);
             button12.ForeColor = Color.LightSeaGreen;
             floor1 = true;
+            Thread.Sleep(500);
+            encoder = true;
             Thread.Sleep(500);
             encoder = true;
             
@@ -1339,8 +1373,8 @@ namespace BX6_Test
             button20.BackColor = Color.LightGray;                                 //PowerOff
             button5.BackColor = Color.LightSeaGreen;
 
-            EnableButton ebutton1 = new EnableButton(enablebutton1);
-            button19.Invoke(ebutton1);
+            EnableButton ebutton = new EnableButton(enablebutton);
+            button19.Invoke(ebutton);
 
             //button20.BackColor = Color.LightGray;
             //button5.BackColor = Color.LightSeaGreen;
@@ -1352,6 +1386,7 @@ namespace BX6_Test
             //serialPort1.Write(message1, 0, b.Length);
             //tally = false;
             //encoder = false;
+            //this.Refresh();
             Thread.CurrentThread.Abort();
         }
 
@@ -1376,6 +1411,7 @@ namespace BX6_Test
             catch { }
             R.Abort();
             this.button19.Enabled = true;
+            this.Refresh();
         }
 
         private void button17_Click(object sender, EventArgs e)
